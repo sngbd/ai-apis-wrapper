@@ -116,7 +116,7 @@ app.post('/prompt', async (req, res) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_DEEPSEEK_API_KEY}`,
+          Authorization: `Bearer ${apiKey}`,
         },
       }
     );
