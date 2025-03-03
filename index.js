@@ -86,6 +86,68 @@ app.post('/generate', async (req, res) => {
   }
 });
 
+app.post('/prompt', async (req, res) => {
+  try {
+    const { content } = req.body;
+    
+    if (!content) {
+      return res.status(400).json({ error: 'Missing required parameter: content' });
+    }
+    
+    const apiKey = process.env.DEEPSEEK_API_KEY;
+    
+    if (!apiKey) {
+      return res.status(500).json({ 
+        error: 'Server configuration error: Missing Deepseek credentials' 
+      });
+    }
+    
+    const openRouterResponse = await axios.post(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        messages: [
+          {
+            role: "user",
+            content
+          }
+        ],
+        model: "deepseek/deepseek-r1-distill-llama-70b:free",
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_DEEPSEEK_API_KEY}`,
+        },
+      }
+    );
+
+    const output = openRouterResponse.data.choices[0].message.content;
+    
+    return res.json({
+      content,
+      output,
+    });
+  } catch (error) {
+    console.error('Error prompting:', error);
+    
+    if (error.response) {
+      const errorMessage = error.response.data instanceof Buffer 
+        ? error.response.data.toString() 
+        : JSON.stringify(error.response.data);
+        
+      return res.status(error.response.status).json({
+        error: `Deepseek API error: ${error.response.status}`,
+        details: errorMessage
+      });
+    }
+    
+    return res.status(500).json({ 
+      error: 'Failed to prompt', 
+      details: error.message 
+    });
+  }
+});
+
 app.listen(port, () => {
-  console.log(`Workers AI Wrapper server running on port ${port}`);
+  console.log(`AI API Wrapper server running on port ${port}`);
 });

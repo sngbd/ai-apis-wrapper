@@ -1,19 +1,12 @@
 {
-  "name": "workers-ai-wrapper",
+  "name": "ai-apis-wrapper",
   "version": "1.0.0",
-  "description": "REST API for generating images using Cloudflare Workers AI and Stable Diffusion",
+  "description": "REST API for to wrap AI APIs",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
-  "keywords": [
-    "stable-diffusion",
-    "cloudflare",
-    "workers-ai",
-    "image-generation",
-    "api"
-  ],
   "dependencies": {
     "axios": "^1.6.7",
     "body-parser": "^1.20.2",
